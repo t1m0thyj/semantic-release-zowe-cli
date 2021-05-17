@@ -9,36 +9,38 @@ type ReleaseType = "major" | "minor" | "patch" | "prerelease" | null;
 
 export default async (pluginConfig: any, context: Context): Promise<ReleaseType> => {
     // TODO Handle release type "prerelease"
-    const octokit = new Octokit({ auth: context.env.GITHUB_TOKEN });
-    const repoInfo = parseRepositoryURL(context.options!.repositoryUrl);
-    const prs = await octokit.repos.listPullRequestsAssociatedWithCommit({
-        owner: repoInfo.user,
-        repo: repoInfo.project,
-        commit_sha: context.nextRelease!.gitHead
-    });
-
-    if (prs.data.length > 0) {
-        const labels = await octokit.issues.listLabelsOnIssue({
+    if (context.nextRelease != null) {
+        const octokit = new Octokit({ auth: context.env.GITHUB_TOKEN });
+        const repoInfo = parseRepositoryURL(context.options!.repositoryUrl);
+        const prs = await octokit.repos.listPullRequestsAssociatedWithCommit({
             owner: repoInfo.user,
             repo: repoInfo.project,
-            issue_number: prs.data[0].number
+            commit_sha: context.nextRelease.gitHead
         });
-        const labelNames = labels.data.map(label => label.name);
-        let releaseType: ReleaseType | undefined = undefined;
-    
-        if (labelNames.includes("release-major")) {
-            releaseType = "major";
-        } else if (labelNames.includes("release-minor")) {
-            releaseType = "minor";
-        } else if (labelNames.includes("release-patch")) {
-            releaseType = "patch";
-        } else if (labelNames.includes("release-none")) {
-            releaseType = null;
-        }
 
-        if (releaseType !== undefined) {
-            context.logger.log(`Detected release type '${releaseType || "none"}' from pull request label`);
-            return releaseType;
+        if (prs.data.length > 0) {
+            const labels = await octokit.issues.listLabelsOnIssue({
+                owner: repoInfo.user,
+                repo: repoInfo.project,
+                issue_number: prs.data[0].number
+            });
+            const labelNames = labels.data.map(label => label.name);
+            let releaseType: ReleaseType | undefined = undefined;
+        
+            if (labelNames.includes("release-major")) {
+                releaseType = "major";
+            } else if (labelNames.includes("release-minor")) {
+                releaseType = "minor";
+            } else if (labelNames.includes("release-patch")) {
+                releaseType = "patch";
+            } else if (labelNames.includes("no-release")) {
+                releaseType = null;
+            }
+
+            if (releaseType !== undefined) {
+                context.logger.log(`Detected release type '${releaseType || "none"}' from pull request label`);
+                return releaseType;
+            }
         }
     }
 
