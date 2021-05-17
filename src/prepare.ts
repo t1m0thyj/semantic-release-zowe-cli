@@ -3,6 +3,7 @@ import { Context } from "semantic-release";
 export default async (pluginConfig: any, context: Context): Promise<void> => {
     // Update deps/dev deps
     // Update version in changelog
+    context.logger.log(JSON.stringify(pluginConfig));
     context.logger.log(JSON.stringify(context.options?.branches));
 }
 
