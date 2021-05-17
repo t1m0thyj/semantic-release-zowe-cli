@@ -8,6 +8,8 @@ const parseRepositoryURL = require("@hutson/parse-repository-url");
 type ReleaseType = "major" | "minor" | "patch" | "prerelease" | null;
 
 export default async (pluginConfig: any, context: Context): Promise<ReleaseType> => {
+    context.logger.log(JSON.stringify(pluginConfig));
+    context.logger.log(JSON.stringify(context.options));
     // TODO Handle release type "prerelease"
     if (context.nextRelease != null) {
         const octokit = new Octokit({ auth: context.env.GITHUB_TOKEN });
