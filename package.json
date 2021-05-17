@@ -1,0 +1,24 @@
+{
+  "name": "semantic-release-zowe-cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hutson/parse-repository-url": "^5.0.0",
+    "@octokit/rest": "^18.5.3",
+    "@types/semantic-release": "^17.2.0",
+    "execa": "^5.0.0",
+    "semver-diff": "^3.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^15.0.2",
+    "semantic-release": "^17.4.2",
+    "typescript": "^4.2.4"
+  }
+}
