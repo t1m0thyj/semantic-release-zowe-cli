@@ -2,6 +2,7 @@ import { Octokit } from "@octokit/rest";
 import { Context } from "semantic-release";
 import semverDiff from "semver-diff";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const parseRepositoryURL = require("@hutson/parse-repository-url");
 
 type ReleaseType = "major" | "minor" | "patch" | "prerelease" | null;
@@ -41,8 +42,8 @@ export default async (pluginConfig: any, context: Context): Promise<ReleaseType>
         }
     }
 
-    let oldPkgVer = context.lastRelease?.version;
-    let newPkgVer = context.nextRelease?.version;
+    const oldPkgVer = context.lastRelease?.version;
+    const newPkgVer = context.nextRelease?.version;
 
     if (oldPkgVer != null && newPkgVer != null) {
         const releaseType = (semverDiff(oldPkgVer, newPkgVer) as ReleaseType) || null;
