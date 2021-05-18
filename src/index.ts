@@ -1,4 +1,4 @@
-export { default as analyzeCommits } from "./analyzeCommits";
-export { default as generateNotes } from "./generateNotes";
+export { default as analyzeCommits } from "./analyze-commits";
+export { default as generateNotes } from "./generate-notes";
 export { default as prepare } from "./prepare";
-export { default as verifyConditions } from "./verifyConditions";
+export { default as success } from "./success";

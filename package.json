@@ -14,13 +14,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@hutson/parse-repository-url": "^5.0.0",
     "@octokit/rest": "^18.5.3",
     "@types/semantic-release": "^17.2.0",
     "execa": "^5.0.0",
+    "git-url-parse": "^11.4.4",
     "semver-diff": "^3.1.1"
   },
   "devDependencies": {
+    "@types/git-url-parse": "^9.0.0",
     "@types/node": "^15.0.2",
     "@typescript-eslint/eslint-plugin": "^4.24.0",
     "@typescript-eslint/parser": "^4.24.0",

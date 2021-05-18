@@ -1,16 +1,15 @@
 import * as fs from "fs";
 import { Octokit } from "@octokit/rest";
 import execa from "execa";
+import gitUrlParse from "git-url-parse";
 import { Context } from "semantic-release";
 import semverDiff from "semver-diff";
 
 type ReleaseType = "major" | "minor" | "patch" | "prerelease" | null;
 
-function getGitHubOwnerAndRepo(context: Context): [string, string] {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const parseRepositoryURL = require("@hutson/parse-repository-url");
-    const repoInfo = parseRepositoryURL(context.options!.repositoryUrl);
-    return [repoInfo.user, repoInfo.project];
+function getGitOwnerAndRepo(context: Context): [string, string] {
+    const urlParsed = gitUrlParse(context.options!.repositoryUrl);
+    return [urlParsed.owner, urlParsed.name];
 }
 
 export default async (pluginConfig: any, context: Context): Promise<ReleaseType> => {
@@ -24,7 +23,7 @@ export default async (pluginConfig: any, context: Context): Promise<ReleaseType>
         const octokit = new Octokit({
             auth: context.env.GH_TOKEN || context.env.GITHUB_TOKEN
         });
-        const [owner, repo] = getGitHubOwnerAndRepo(context);
+        const [owner, repo] = getGitOwnerAndRepo(context);
         const prs = await octokit.repos.listPullRequestsAssociatedWithCommit({
             owner, repo,
             commit_sha: (await execa("git rev-parse HEAD", context)).stdout
