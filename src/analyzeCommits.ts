@@ -8,9 +8,13 @@ const parseRepositoryURL = require("@hutson/parse-repository-url");
 type ReleaseType = "major" | "minor" | "patch" | "prerelease" | null;
 
 export default async (pluginConfig: any, context: Context): Promise<ReleaseType> => {
-    context.logger.log(JSON.stringify(pluginConfig));
-    context.logger.log(JSON.stringify(context.options));
-    // TODO Handle release type "prerelease"
+    context.logger.log(JSON.stringify(context.env));
+    // const branch = pluginConfig.branches.find((b: any) => b.name === context.env.BRANCH_NAME);
+    // if (branch.prerelease) {
+    //     context.logger.log(`Detected release type 'prerelease' from branch name '${branch.name}'`);
+    //     return "prerelease";
+    // }
+
     if (context.nextRelease != null) {
         const octokit = new Octokit({ auth: context.env.GITHUB_TOKEN });
         const repoInfo = parseRepositoryURL(context.options!.repositoryUrl);
