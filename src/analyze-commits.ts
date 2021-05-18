@@ -60,7 +60,6 @@ export default async (pluginConfig: any, context: Context): Promise<ReleaseType>
     if (oldPkgVer != null && newPkgVer != null) {
         const releaseType = (semverDiff(oldPkgVer, newPkgVer) as ReleaseType) || null;
         context.logger.log(`Detected release type '${releaseType || "none"}' from package.json version field`);
-        return releaseType;
     }
 
     return null;
