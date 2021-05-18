@@ -22,12 +22,12 @@ async function updateDependency(context: Context, pkgName: string, pkgTag: strin
     const packageJson = JSON.parse(fs.readFileSync("package.json", "utf-8"));
     const dependencies = packageJson[dev ? "devDependencies" : "dependencies"] || {};
     const currentVersion: string = dependencies[pkgName];
-    const latestVersion = (await execa(`npm view ${pkgName}@${pkgTag} version`, context)).stdout;
+    const latestVersion = (await execa(`npm view ${pkgName}@${pkgTag} version`)).stdout;
 
     if (currentVersion !== latestVersion) {
         const npmArgs = dev ? "--save-dev" : "--save-prod --save-exact";
         if (!context.options?.dryRun) {
-            await execa(`npm install ${pkgName}@${latestVersion} ${npmArgs}`, context);
+            await execa(`npm install ${pkgName}@${latestVersion} ${npmArgs}`);
             context.logger.log(`Updated package ${pkgName} to version ${latestVersion}`);
         } else {
             context.logger.log(`[skip] npm install ${pkgName}@${latestVersion} ${npmArgs}`);
