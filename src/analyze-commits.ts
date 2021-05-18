@@ -26,7 +26,7 @@ export default async (pluginConfig: any, context: Context): Promise<ReleaseType>
         const [owner, repo] = getGitOwnerAndRepo(context);
         const prs = await octokit.repos.listPullRequestsAssociatedWithCommit({
             owner, repo,
-            commit_sha: (await execa("git rev-parse HEAD")).stdout
+            commit_sha: (await execa("git rev-parse HEAD", { shell: true })).stdout
         });
 
         if (prs.data.length > 0) {
