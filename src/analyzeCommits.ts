@@ -8,7 +8,7 @@ const parseRepositoryURL = require("@hutson/parse-repository-url");
 type ReleaseType = "major" | "minor" | "patch" | "prerelease" | null;
 
 export default async (pluginConfig: any, context: Context): Promise<ReleaseType> => {
-    context.logger.log(JSON.stringify(context.env));
+    context.logger.log(JSON.stringify((context as any).branch));
     // const branch = pluginConfig.branches.find((b: any) => b.name === context.env.BRANCH_NAME);
     // if (branch.prerelease) {
     //     context.logger.log(`Detected release type 'prerelease' from branch name '${branch.name}'`);
