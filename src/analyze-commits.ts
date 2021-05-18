@@ -17,7 +17,7 @@ export default async (pluginConfig: any, context: Context): Promise<ReleaseType>
     const newPkgVer = JSON.parse(fs.readFileSync("package.json", "utf-8")).version;
 
     if (oldPkgVer != null && newPkgVer != null) {
-        const releaseType = semverDiff(oldPkgVer, newPkgVer) as ReleaseType;
+        const releaseType = semverDiff(oldPkgVer, newPkgVer);
 
         if (releaseType != null) {
             context.logger.log(`Detected release type '${releaseType}' from package.json version field`);
