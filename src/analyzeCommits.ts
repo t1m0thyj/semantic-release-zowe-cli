@@ -1,33 +1,38 @@
+import * as fs from "fs";
 import { Octokit } from "@octokit/rest";
+import execa from "execa";
 import { Context } from "semantic-release";
 import semverDiff from "semver-diff";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const parseRepositoryURL = require("@hutson/parse-repository-url");
-
 type ReleaseType = "major" | "minor" | "patch" | "prerelease" | null;
 
+function getGitHubOwnerAndRepo(context: Context): [string, string] {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const parseRepositoryURL = require("@hutson/parse-repository-url");
+    const repoInfo = parseRepositoryURL(context.options!.repositoryUrl);
+    return [repoInfo.user, repoInfo.project];
+}
+
 export default async (pluginConfig: any, context: Context): Promise<ReleaseType> => {
-    context.logger.log(JSON.stringify((context as any).branch));
-    // const branch = pluginConfig.branches.find((b: any) => b.name === context.env.BRANCH_NAME);
-    // if (branch.prerelease) {
-    //     context.logger.log(`Detected release type 'prerelease' from branch name '${branch.name}'`);
-    //     return "prerelease";
-    // }
+    const branch = (context as any).branch;
+    if (branch.prerelease) {
+        context.logger.log(`Detected release type 'prerelease' from branch name '${branch.name}'`);
+        return "prerelease";
+    }
 
     if (context.nextRelease != null) {
-        const octokit = new Octokit({ auth: context.env.GITHUB_TOKEN });
-        const repoInfo = parseRepositoryURL(context.options!.repositoryUrl);
+        const octokit = new Octokit({
+            auth: context.env.GH_TOKEN || context.env.GITHUB_TOKEN
+        });
+        const [owner, repo] = getGitHubOwnerAndRepo(context);
         const prs = await octokit.repos.listPullRequestsAssociatedWithCommit({
-            owner: repoInfo.user,
-            repo: repoInfo.project,
-            commit_sha: context.nextRelease.gitHead
+            owner, repo,
+            commit_sha: (await execa("git rev-parse HEAD", context)).stdout
         });
 
         if (prs.data.length > 0) {
             const labels = await octokit.issues.listLabelsOnIssue({
-                owner: repoInfo.user,
-                repo: repoInfo.project,
+                owner, repo,
                 issue_number: prs.data[0].number
             });
             const labelNames = labels.data.map(label => label.name);
@@ -51,7 +56,7 @@ export default async (pluginConfig: any, context: Context): Promise<ReleaseType>
     }
 
     const oldPkgVer = context.lastRelease?.version;
-    const newPkgVer = context.nextRelease?.version;
+    const newPkgVer = JSON.parse(fs.readFileSync("package.json", "utf-8")).version;
 
     if (oldPkgVer != null && newPkgVer != null) {
         const releaseType = (semverDiff(oldPkgVer, newPkgVer) as ReleaseType) || null;
