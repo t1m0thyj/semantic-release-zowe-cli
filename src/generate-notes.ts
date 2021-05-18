@@ -6,7 +6,8 @@ export default async (pluginConfig: any, context: Context): Promise<string | nul
 
     if (fs.existsSync("CHANGELOG.md")) {
         const changelogLines: string[] = fs.readFileSync("CHANGELOG.md", "utf-8").split(/\r?\n/);
-        let lineNum = changelogLines.findIndex((line) => line.startsWith("## Recent Changes"));
+        let lineNum = changelogLines.findIndex((line) => line.startsWith("## Recent Changes") ||
+            (context.nextRelease != null && line.startsWith(`## \`${context.nextRelease.version}\``)));
 
         if (lineNum !== -1) {
             while (changelogLines[lineNum + 1] != null && !changelogLines[lineNum + 1].startsWith("## ")) {
