@@ -13,6 +13,7 @@ export default async (pluginConfig: any, context: Context): Promise<string | nul
                 lineNum++;
                 releaseNotes += changelogLines[lineNum] + "\n";
             }
+            context.logger.log("Found changelog header in CHANGELOG.md");
         } else {
             context.logger.log("Missing changelog header in CHANGELOG.md");
         }

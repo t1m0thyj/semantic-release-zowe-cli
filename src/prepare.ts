@@ -26,7 +26,12 @@ async function updateDependency(context: Context, pkgName: string, pkgTag: strin
 
     if (currentVersion !== latestVersion) {
         const npmArgs = dev ? "--save-dev" : "--save-prod --save-exact";
-        await execa(`npm install ${pkgName}@${latestVersion} ${npmArgs}`, context);
+        if (!context.options?.dryRun) {
+            await execa(`npm install ${pkgName}@${latestVersion} ${npmArgs}`, context);
+            context.logger.log(`Updated package ${pkgName} to version ${latestVersion}`);
+        } else {
+            context.logger.log(`[skip] npm install ${pkgName}@${latestVersion} ${npmArgs}`);
+        }
     }
 }
 
@@ -46,11 +51,18 @@ export default async (pluginConfig: any, context: Context): Promise<void> => {
     }
 
     if (fs.existsSync("CHANGELOG.md") && context.nextRelease != null) {
-        const changelogContents: string = fs.readFileSync("CHANGELOG.md", "utf-8");
-        const pkgVersion = context.nextRelease.version;
+        const oldContents = fs.readFileSync("CHANGELOG.md", "utf-8");
+        const searchValue = "## Recent Changes";
+        const replaceValue = `## \`${context.nextRelease.version}\``;
+        const newContents = oldContents.replace(searchValue, replaceValue);
 
-        if (changelogContents.includes("## Recent Changes") && !changelogContents.includes("## `" + pkgVersion + "`")) {
-            fs.writeFileSync("CHANGELOG.md", changelogContents.replace("## Recent Changes", "## `" + pkgVersion + "`"));
+        if (newContents !== oldContents) {
+            if (!context.options?.dryRun) {
+                fs.writeFileSync("CHANGELOG.md", newContents);
+                context.logger.log(`Updated version header in CHANGELOG.md`)
+            } else {
+                context.logger.log(`[skip] Replace "${searchValue}" with "${replaceValue}" in CHANGELOG.md`);
+            }
         }
     }
 }
