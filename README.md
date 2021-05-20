@@ -12,7 +12,7 @@
 | `verifyConditions` | Convert the semver `level` property in branch config into a `range` value that the `verifyRelease` hook will validate. |
 | `analyzeCommits`   | Check if version was already bumped in package.json, or if one of the following labels was specified on a PR: release-major, release-minor, release-patch, no-release |
 | `generateNotes`    | Extract release notes from the Recent Changes section of CHANGELOG.md. |
-| `prepare`          | Update dependencies and dev dependencies specified in branch config, and update version number in changelog. |
+| `prepare`          | Update latest version number in CHANGELOG.md. |
 | `success`          | Publish additional tags to NPM specified in `aliasTags` property of branch config. |
 
 ## Install
