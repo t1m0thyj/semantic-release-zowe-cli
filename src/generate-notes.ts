@@ -35,7 +35,7 @@ export default async (pluginConfig: any, context: Context): Promise<string | nul
             const changelogFile = path.join(path.relative(process.cwd(), location), "CHANGELOG.md");
             const packageReleaseNotes = getReleaseNotes(context, changelogFile);
             if (packageReleaseNotes != null) {
-                releaseNotes += `*${name}*\n${packageReleaseNotes}\n\n`;
+                releaseNotes += `**${name}**\n${packageReleaseNotes}\n\n`;
             }
         }
 
