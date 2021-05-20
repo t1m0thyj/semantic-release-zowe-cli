@@ -1,9 +1,9 @@
-import * as fs from "fs";
 import { Octokit } from "@octokit/rest";
 import execa from "execa";
 import gitUrlParse from "git-url-parse";
 import { Context } from "semantic-release";
 import semverDiff from "semver-diff";
+import { readPackageVersion } from "./monorepo";
 
 type ReleaseType = "major" | "minor" | "patch" | null;
 
@@ -14,7 +14,7 @@ function getGitOwnerAndRepo(context: Context): [string, string] {
 
 export default async (pluginConfig: any, context: Context): Promise<ReleaseType> => {
     const oldPkgVer = context.lastRelease?.version;
-    const newPkgVer = JSON.parse(fs.readFileSync("package.json", "utf-8")).version;
+    const newPkgVer = readPackageVersion(context);
 
     if (oldPkgVer != null && newPkgVer != null) {
         const releaseType = semverDiff(oldPkgVer, newPkgVer);
@@ -31,7 +31,7 @@ export default async (pluginConfig: any, context: Context): Promise<ReleaseType>
     const [owner, repo] = getGitOwnerAndRepo(context);
     const prs = await octokit.repos.listPullRequestsAssociatedWithCommit({
         owner, repo,
-        commit_sha: (await execa("git rev-parse HEAD", { shell: true })).stdout
+        commit_sha: (await execa("git", ["rev-parse", "HEAD"])).stdout
     });
 
     if (prs.data.length > 0) {

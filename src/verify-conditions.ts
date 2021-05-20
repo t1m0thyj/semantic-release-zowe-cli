@@ -1,10 +1,10 @@
-import * as fs from "fs";
 import { Context } from "semantic-release";
+import { readPackageVersion } from "./monorepo";
 
 export default async (pluginConfig: any, context: Context): Promise<void> => {
     const branch = (context as any).branch;
+    const pkgVersion = readPackageVersion(context);
 
-    const pkgVersion = JSON.parse(fs.readFileSync("package.json", "utf-8")).version;
     if (pkgVersion != null) {
         const [major, minor, ...rest] = pkgVersion.split(".");
         switch (branch.level) {
