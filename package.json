@@ -2,7 +2,8 @@
   "name": "semantic-release-zowe-cli",
   "version": "1.0.0",
   "description": "",
-  "main": "lib/index.js",
+  "main": "./lib/index.js",
+  "bin": "./semantic-release.sh",
   "scripts": {
     "build": "tsc",
     "lint": "eslint src --ext .ts",

@@ -22,6 +22,10 @@ function updateChangelog(context: Context, changelogFile: string) {
 }
 
 export default async (pluginConfig: any, context: Context): Promise<void> => {
+    if (context.nextRelease != null) {
+        process.env.GIT_TAG_MESSAGE = `Release ${context.nextRelease.version} to ${(context as any).branch.name}`;
+    }
+
     if (USE_LERNA) {
         for (const { location } of (await getPackageInfo(context)).filter((pkg) => pkg.changed)) {
             const changelogFile = path.join(path.relative(process.cwd(), location), "CHANGELOG.md");
