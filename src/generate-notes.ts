@@ -1,9 +1,10 @@
 import * as fs from "fs";
 import * as path from "path";
-import { Context } from "semantic-release";
-import { getPackageInfo, USE_LERNA } from "./monorepo";
+import { Constants } from "./constants";
+import { IContext } from "./doc/IContext";
+import * as utils from "./utils";
 
-function getReleaseNotes(context: Context, changelogFile: string): string | null {
+function getReleaseNotes(context: IContext, changelogFile: string): string | null {
     let releaseNotes = "";
 
     if (fs.existsSync(changelogFile)) {
@@ -27,11 +28,11 @@ function getReleaseNotes(context: Context, changelogFile: string): string | null
     return releaseNotes.trim() || null;
 }
 
-export default async (pluginConfig: any, context: Context): Promise<string | null> => {
-    if (USE_LERNA) {
+export default async (pluginConfig: any, context: IContext): Promise<string | null> => {
+    if (Constants.USE_LERNA) {
         let releaseNotes = "";
 
-        for (const { name, location } of (await getPackageInfo(context)).filter((pkg) => pkg.changed)) {
+        for (const { name, location } of (await utils.getLernaPackageInfo(context)).filter((pkg) => pkg.changed)) {
             const changelogFile = path.join(path.relative(process.cwd(), location), "CHANGELOG.md");
             const packageReleaseNotes = getReleaseNotes(context, changelogFile);
             if (packageReleaseNotes != null) {

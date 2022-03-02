@@ -1,9 +1,9 @@
-import { Context } from "semantic-release";
-import { readPackageVersion } from "./monorepo";
+import { IContext } from "./doc/IContext";
+import * as utils from "./utils";
 
-export default async (pluginConfig: any, context: Context): Promise<void> => {
+export default async (pluginConfig: any, context: IContext): Promise<void> => {
     const branch = (context as any).branch;
-    const pkgVersion = readPackageVersion(context);
+    const pkgVersion = utils.readPackageVersion(context);
 
     if (pkgVersion != null) {
         const [major, minor, ...rest] = pkgVersion.split(".");

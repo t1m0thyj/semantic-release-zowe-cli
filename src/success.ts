@@ -1,11 +1,11 @@
-import { Context } from "semantic-release";
-import { USE_LERNA } from "./monorepo";
+import { Constants } from "./constants";
+import { IContext } from "./doc/IContext";
 
-export default async (pluginConfig: any, context: Context): Promise<void> => {
+export default async (pluginConfig: any, context: IContext): Promise<void> => {
     const branch = (context as any).branch;
 
     if (branch.aliasTags && context.nextRelease != null) {
-        const publishPlugin = USE_LERNA ? "semantic-release-lerna" : "@semantic-release/npm";
+        const publishPlugin = Constants.USE_LERNA ? "semantic-release-lerna" : "@semantic-release/npm";
         // eslint-disable-next-line @typescript-eslint/no-var-requires
         const { addChannel } = require(publishPlugin);
 

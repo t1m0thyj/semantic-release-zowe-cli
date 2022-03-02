@@ -14,10 +14,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@octokit/request-error": "^2.1.0",
     "@octokit/rest": "^18.5.3",
     "@types/semantic-release": "^17.2.0",
+    "@types/semver": "^7.3.9",
+    "delay": "^5.0.0",
     "execa": "^5.0.0",
     "git-url-parse": "^11.4.4",
+    "semver": "^7.3.5",
     "semver-diff": "^3.1.1"
   },
   "devDependencies": {
