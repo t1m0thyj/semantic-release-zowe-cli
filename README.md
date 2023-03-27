@@ -1,5 +1,7 @@
 # semantic-release-zowe-cli
 
+**Note:** This was an experiment that is now abandoned in favor of [zowe-actions/octorelease](https://github.com/zowe-actions/octorelease)
+
 [**semantic-release**](https://github.com/semantic-release/semantic-release) plugin to publish a Zowe CLI component.
 
 [![Build Status](https://github.com/t1m0thyj/semantic-release-zowe-cli/workflows/Test/badge.svg)](https://github.com/t1m0thyj/semantic-release-zowe-cli/actions?query=workflow%3ATest+branch%3Amaster)
